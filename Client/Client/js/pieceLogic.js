@@ -2,7 +2,7 @@
 var moving = false;
 /* Hightlight the current clicked zone */
 
-
+var selectedpiecezonecolor = null;
 var tdElement = null;
 var selectedpiece = null;
 var pieceselected = false;
@@ -13,10 +13,25 @@ table.addEventListener('click', function (e) {
     console.log("My turn?" + myturn);
     tdElement = document.getElementById("td-" + e.target.id.split('-')[1]);
     //ha targetelni szeretnék egy bábut
-    if (e.target.className.includes(color) && !pieceselected&& myturn) {
+    if (e.target.className.includes(color) && !pieceselected && myturn) {
+        console.log("Bábu targetelése");
         ResetPossibleMoves();
         Targeting(e);
         return;
+    }
+    else if (e.target.className.includes(color) && pieceselected && myturn) {
+        console.log("Rossz targetelése");
+        ResetPossibleMoves();
+        //ha kétszer ugyanazt a bábut targetelem.
+        if (selectedpiece == e.target.id.split('-')[1]) {
+            ClearTarget();
+            return;
+        }
+        else {
+            Targeting(e);
+            return;
+        }
+        
     }
     //Ha már van kiválasztva bábu és mozogni szeretnénk vele.
     Move(e);
@@ -48,9 +63,11 @@ function SendMoveToServer(oldcoord, newcoord) {
 }
 
 function Targeting(e) {
+    SetBoardColors();
     pieceselected = true;
     console.log("Piece selected for moving:" + e.target.className);
     selectedpiece = e.target.id.split('-')[1];
+    selectedpiecezonecolor = document.getElementById('td-' + selectedpiece).className;
     document.getElementById('td-' + selectedpiece).className = 'yellow';
     //Be kell tölteni a validmoveokat.
     ColorPossibleMoves(selectedpiece[0], selectedpiece[1]);
@@ -58,8 +75,8 @@ function Targeting(e) {
 function ClearTarget(){
     pieceselected = false;
     selectedpiece = null;
+    SetBoardColors();
 }
-
 
 
 function Move(e) {
@@ -74,36 +91,25 @@ function Move(e) {
             x.NewPosition.Y == newzone[1]).length > 0) {
             SendMoveToServer(oldzone[1] + "" + oldzone[0], newzone[1] + "" + newzone[0]);
             pieceselected = false;
+            SetBoardColors();
             return;
         }
         //Ha olyan mezőt targetelek ki ahova nem léphetek
         else {
-            // Ha ugyanazt a bábut targetelem ki mégegyszer.            
-            if (document.getElementById('div-' + newzone).className.includes(color) && newzone == oldzone)
-            {
-                ResetPossibleMoves();
-                ClearTarget();
-                return;
-            }
-            //Ha egy másik saját bábut targetelek ki.
-            else if (document.getElementById('div-' + newzone).className.includes(color)) {
-                ResetPossibleMoves();
-                Targeting(e);
-                return;
-            }
-            //Ha egy üres vagy enemy mezőt targetelek ki.
-            else {
-                ResetPossibleMoves();
-                pieceselected = false;
-                selectedpiece = null;
-                return;
-            }
+            console.log("C");
+            ResetPossibleMoves();
+            pieceselected = false;
+            selectedpiece = null;
+            SetBoardColors();
+            return;
             
         }
     }
     else {
+        console.log("D");
         ResetPossibleMoves();
         pieceselected = false;
+        SetBoardColors();
         return;
     }
 }

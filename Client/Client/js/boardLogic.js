@@ -172,16 +172,6 @@ function SetZoneColor(i, j) {
     else {
         return "light";
     }
-    //else {
-    //    if ((i % 2 === 0 && j % 2 === 0) || (i % 2 === 1 && j % 2 === 1)) {
-
-    //        return "light";
-    //    }
-    //    else {
-    //        return "dark";
-    //    }
-    //}
-
 }
 
 function GetPossibleMoves(fromx, fromy) {
