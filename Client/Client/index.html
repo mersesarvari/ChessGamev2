@@ -3,9 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <style>
-
-    </style>
+    
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
@@ -17,7 +15,15 @@
 <!-- BODY and Board-->
 
 <body>
-
+    <audio id="captureAudio">
+        <source src="../Client/audio/capture.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="moveAudio">
+        <source src="../Client/audio/move-self.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="notifyAudio">
+        <source src="../Client/audio/notify.mp3" type="audio/mpeg">
+    </audio>
     <div><button onclick="BoardCreator()">Create Board</button></div>
     <div><button onclick="DrawPieces('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR')">LoadPieces</button></div>
     <div><button onclick="ConvertToFen()">Convert To Fen</button></div>

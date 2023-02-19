@@ -66,19 +66,21 @@ namespace ChessBotv2
                                 Server.SendMessage(d.Playerid, JsonConvert.SerializeObject(new { Opcode = 5, OldX = 0, OldY = 0, NewX = 0, NewY = 3 }));
                             }
                         }
-                        currentgame.PlayerMove(old + n);
-                        //Castle move check
 
+                        //Player Moving
+                        currentgame.PlayerMove(old + n);
                         Console.WriteLine("Player moved: " + old + n);
-                        Server.SendMessage(d.Playerid, JsonConvert.SerializeObject(new { Opcode = 5, OldX=d.OldcoordX, OldY=d.OldcoordY, NewX=d.NewcoordX, NewY=d.NewcoordY }));
+                        Server.SendMessage(d.Playerid, JsonConvert.SerializeObject(new { Opcode = 5, OldX=d.OldcoordX, OldY=d.OldcoordY, NewX=d.NewcoordX, NewY=d.NewcoordY}));
+                        //Player WON
                         if (currentgame.board.IsEndGame)
                         {
                             Server.SendMessage(d.Playerid, JsonConvert.SerializeObject(new { Opcode = 8, message="Congratulation! You won the game!" }));
                         }
+                        //BOT MOVE
                         string botmove =currentgame.bot.GetBestMove();
                         currentgame.PlayerMove(botmove);
-                        //Le kell checkolni később hogy tényleg 4 elemű e a karakterkód, mert lehet 5 elemű is
 
+                        //Le kell checkolni később hogy tényleg 4 elemű e a karakterkód, mert lehet 5 elemű is
                         var botmovecoordsold = Game.GetCoordinateFromZone(botmove[0] +""+ botmove[1]);
                         var botmovecoordsnew = Game.GetCoordinateFromZone(botmove[2] + "" + botmove[3]);
                         if (old[0] == 4 && old[1] == 7) // Ha A lépő játékos a király

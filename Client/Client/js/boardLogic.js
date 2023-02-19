@@ -167,7 +167,14 @@ function DrawPieces() {
 function MovePiece(oldcoord, newcoord)
 {
     var original = document.getElementById('div-' + oldcoord);
-    document.getElementById('div-' + newcoord).className = original.className;
+    var newposdiv = document.getElementById('div-' + newcoord);
+    if (newposdiv.className == "free") {
+        PlaySound("move");
+    }
+    else {
+        PlaySound("capture");
+    }
+    newposdiv.className = original.className;
     original.className = "free"; 
 }
 function SetZoneColor(i, j) {
@@ -248,6 +255,21 @@ function ResetPossibleMoves() {
     }
     possibletargets = [];
 
+}
+
+function PlaySound(type) {
+    if (type == "move") {
+        var x = document.getElementById("moveAudio");
+        x.play();
+    }
+    if (type == "notify") {
+        var x = document.getElementById("notifyAudio");
+        x.play();
+    }
+    if (type == "capture") {
+        var x = document.getElementById("captureAudio");
+        x.play();
+    }
 }
 
 

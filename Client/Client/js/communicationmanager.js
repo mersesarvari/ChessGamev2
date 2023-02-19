@@ -26,6 +26,7 @@ function Parser(data) {
     }
     //Moving
     if (obj.Opcode === 5) {
+        //Itt kéne checkolni a soundokat.
         MovePiece(obj.OldY + "" + obj.OldX, obj.NewY + "" + obj.NewX);
         if (obj.Possiblemoves!==undefined) {
             possiblemoves = obj.Possiblemoves;
@@ -52,6 +53,7 @@ function Parser(data) {
     }
     //Someone won the game
     if (obj.Opcode === 8) {
+        PlaySound("notify");
         alert(obj.message);
     }
 }
