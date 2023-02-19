@@ -31,13 +31,13 @@ namespace ChessBotv2
             if (Gametype == GameType.Multiplayer && Player1.ToString().Length > 0 && Player2.ToString().Length > 0)
             {
                 //Fel kellett cserélni itt a színeket valamiért. tuti valami bug...
-                var gamedataWhite = new Message() { Opcode = 4, Gameid = Id, Fen = board.ToFen(), Playerid = Player1 };
-                var gamedataBlack = new Message() { Opcode = 4, Gameid = Id, Fen = board.ToFen(), Playerid = Player1 };
+                var gamedataWhite = new { Opcode = 4, Gameid = Id, Fen = board.ToFen(), Playerid = Player1, Color="white" };
+                var gamedataBlack = new { Opcode = 4, Gameid = Id, Fen = board.ToFen(), Playerid = Player2, Color="black"};
                 Server.SendMessage(Player1.ToString(), JsonConvert.SerializeObject(gamedataWhite));
                 Server.SendMessage(Player2.ToString(), JsonConvert.SerializeObject(gamedataBlack));
                 //Sending players the basic possible moves
                 var whitemoves = board.Moves();
-                var wmovemsg = new Message() { Opcode = 6, Custom = whitemoves };
+                var wmovemsg = new { Opcode = 6, Custom = whitemoves };
                 Server.SendMessage(Player1, JsonConvert.SerializeObject(wmovemsg));
 
             }
@@ -66,27 +66,6 @@ namespace ChessBotv2
             }
                 
         }
-        public string GetActivePlayer()
-        {
-            if (turn % 2 == 0)
-            {
-                return Player1;
-            }
-            else return Player2;
-        }
-
-        public void BroadcastMessage(Message message)
-        {
-            if (Player1.Count() >= 0)
-            {
-                Server.SendMessage(Player1, JsonConvert.SerializeObject(message));
-            }
-            if (Player2.Count() >= 0)
-            {
-                Server.SendMessage(Player2, JsonConvert.SerializeObject(message));
-            }
-        }
-
         public void ExecuteCastleIfNeeded(int OldcoordX, int OldcoordY, int NewcoordX, int NewcoordY)
         {
             if (OldcoordY == 4 && OldcoordX == 0) // Ha A lépő játékos a király

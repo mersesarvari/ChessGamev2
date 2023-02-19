@@ -39,19 +39,24 @@ namespace ChessBotv2
             bot = new Bot(this);
             Id=Guid.NewGuid().ToString();
             board=new ChessBoard() { AutoEndgameRules=AutoEndgameRules.None};
-            moveList = new List<string>();
-            
-            //Console.Write("c,2 position: ");
-            //Console.WriteLine(board["c2"]);
-            //Console.Write("2,1(c2) position: ");
-            //Console.WriteLine(board[new Position(2, 1)]);
-            //Console.WriteLine("2,1 element of the board:" + board[Zones[2,1]]);            
+            moveList = new List<string>();         
             turn= 0;
         }
         public void PlayerMove(string move)
         {
-            moveList.Add(move);
-            board.Move(new Move(move[0] + "" + move[1], move[2] + "" + move[3]));
+            //Hame to manage the situation when a  more then 4 character(pawn is reaching the end of the board)
+            if (move.Length == 4)
+            {
+                moveList.Add(move);
+                board.Move(move);
+                Console.WriteLine("Player moved:");
+            }
+            if (move.Length > 4)
+            {
+                throw new Exception("Pawn has reached his end..");
+            }
+
+            Console.WriteLine(board.ToAscii());
         }
         public static (int, int) GetCoordinateFromZone(string zone)
         {
@@ -77,7 +82,6 @@ namespace ChessBotv2
         public string Converter(string pos1, string pos2)
         {
             return pos1 + "" + pos2;
-        }
-             
+        }             
     }
 }

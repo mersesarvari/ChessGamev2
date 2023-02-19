@@ -21,14 +21,14 @@ namespace ChessBotv2
             var currentid = ID;
             Server.Players.Add(new Player(currentid));
             Console.WriteLine($"[connected]: {currentid}");
-            Server.SendMessage(ID, JsonConvert.SerializeObject(new Message() { Opcode = 0, Playerid = ID }));
+            Server.SendMessage(ID, JsonConvert.SerializeObject(new { Opcode = 0, Playerid = ID }));
 
         }
         protected override void OnMessage(MessageEventArgs e)
         {
 
             var d = JsonConvert.DeserializeObject<Message>(e.Data);
-            //Multiplayer Game. Not working yet.
+            //Multiplayer Game.
             if (d.Opcode == 5 && Server.multiGames.First(x => x.Id == d.Gameid) != null)
             {
                 var currentgame = Server.multiGames.FirstOrDefault(x => x.Id == d.Gameid);
@@ -51,7 +51,7 @@ namespace ChessBotv2
                     }
                 }
             }
-            //Singleplayer Move command
+            //Singleplayer Game move command
             if (d.Opcode == 4 && Server.singleGames.First(x => x.Id == d.Gameid)!=null)
             {
                 var currentgame = Server.singleGames.FirstOrDefault(x => x.Id == d.Gameid);
