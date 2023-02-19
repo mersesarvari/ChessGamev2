@@ -39,8 +39,17 @@ namespace ChessBotv2
                 Server.SendMessage(Player2.ToString(), JsonConvert.SerializeObject(gamedataBlack));
                 //Sending players the basic possible moves
                 var whitemoves = board.Moves();
-                var wmovemsg = new { Opcode = 6, Custom = whitemoves };
-                Server.SendMessage(Player1, JsonConvert.SerializeObject(wmovemsg));
+                if (GetPlayerColor(Player1) == "white")
+                {
+                    var wmovemsg = new { Opcode = 6, Possiblemoves = whitemoves };
+                    Server.SendMessage(Player1, JsonConvert.SerializeObject(wmovemsg));
+                }
+                else
+                {
+                    var wmovemsg = new { Opcode = 6, Possiblemoves = whitemoves };
+                    Server.SendMessage(Player2, JsonConvert.SerializeObject(wmovemsg));
+                }
+                
 
             }
         }

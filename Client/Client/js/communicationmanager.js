@@ -35,9 +35,6 @@ function Parser(data) {
             FEN = obj.Fen;
             console.log(FEN);
         }
-        if (obj.Possiblemoves!==undefined) {
-            possiblemoves = obj.Possiblemoves;
-        }
         ResetPossibleMoves();
         if (myturn) {
             myturn = false;
@@ -54,7 +51,8 @@ function Parser(data) {
     }
     else if (obj.Opcode === 6) {
         //Getting all possible moves with my color
-        possiblemoves = obj.Moves;
+        possiblemoves = obj.Possiblemoves;
+        myturn = true;
 
 
     }

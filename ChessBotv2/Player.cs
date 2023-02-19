@@ -11,12 +11,24 @@ namespace ChessBotv2
     {
         public string Id { get; set; }
         public string Name { get; set; }
-        public bool Searching { get; set; }
-        public Player(string id)
+        public bool SearchingSingleplayer { get; set; }
+
+        public bool SearchingMultiplayer { get; set; }
+        public Player(string id, bool multiplayer)
         {
             Id = id;
             Name = "Player";
-            Searching= true;
+            if (multiplayer)
+            {
+                SearchingSingleplayer = false;
+                SearchingMultiplayer = true;
+            }
+            else
+            {
+                SearchingSingleplayer = true;
+                SearchingMultiplayer = false;
+            }
+            
         }
     }
 }

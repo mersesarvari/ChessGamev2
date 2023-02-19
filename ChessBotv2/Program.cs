@@ -17,12 +17,14 @@ namespace ChessBotv2
             Bot.GetBot();
             Server.Instance.Start();
             Console.WriteLine("Server started on ws://localhost:5000");
-            Server.Instance.AddWebSocketService<ConnectionManager>("/singleplayer");
-            Server.Instance.AddWebSocketService<ConnectionManager>("/multiplayer");
+            Server.Instance.AddWebSocketService<SingleplayerSocket>("/singleplayer");
+            Server.Instance.AddWebSocketService<MultiplayerSocket>("/multiplayer");
 
-            Thread t = new Thread(() => Server.CreateBotGame());
+            Thread singlelobby = new Thread(() => Server.CreateBotGame());
+            Thread multilobby = new Thread(() => Server.CreateMultiplayerGame());
 
-            t.Start();
+            singlelobby.Start();
+            multilobby.Start();
             Console.ReadKey();
             Server.Instance.Stop();
         }

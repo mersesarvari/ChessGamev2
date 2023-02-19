@@ -32,18 +32,20 @@ namespace ChessBotv2
             }
         }
 
-        public static void MatchPlayers() 
+        public static void CreateMultiplayerGame() 
         {
             while (true)
             {
                 //Getting players in the lobby
-                var playersinlobby = Server.Players.FindAll(x => x.Searching==true);
+                var playersinlobby = Server.Players.FindAll(x => x.SearchingMultiplayer==true);
                 if (playersinlobby.Count >= 2)
                 {
                     MultiplayerGame currentgame = new MultiplayerGame(100000);
                     currentgame.AddPlayers(playersinlobby[0].Id, playersinlobby[1].Id);
-                    playersinlobby[0].Searching = false;
-                    playersinlobby[1].Searching = false;
+                    playersinlobby[0].SearchingMultiplayer = false;
+                    playersinlobby[1].SearchingMultiplayer = false;
+                    playersinlobby[0].SearchingSingleplayer = false;
+                    playersinlobby[1].SearchingSingleplayer = false;
 
                     Console.WriteLine("[Game created]:" + currentgame.Id);
                     currentgame.StartGame();
@@ -63,12 +65,13 @@ namespace ChessBotv2
             {
                 if (Server.Players.Count > 0)
                 {
-                    var playersinlobby = Server.Players.FindAll(x => x.Searching == true);
+                    var playersinlobby = Server.Players.FindAll(x => x.SearchingSingleplayer == true);
                     if (playersinlobby.Count > 0)
                     {
                         SingleplayerGame currentgame = new SingleplayerGame();
                         currentgame.AddPlayer(playersinlobby[0].Id);
-                        playersinlobby[0].Searching = false;
+                        playersinlobby[0].SearchingMultiplayer = false;
+                        playersinlobby[0].SearchingSingleplayer = false;
 
                         Console.WriteLine("[Bot game created]:" + currentgame.Id);
                         currentgame.StartGame();

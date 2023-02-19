@@ -35,7 +35,7 @@ namespace ChessBotv2
             Server.SendMessage(Player1, JsonConvert.SerializeObject(gamedata));
             if (GetPlayerColor() == "white")
             {
-                var bmovemsg = new { Opcode = 6, Moves = moves };
+                var bmovemsg = new { Opcode = 6, Possiblemoves = moves };
                 Server.SendMessage(Player1, JsonConvert.SerializeObject(bmovemsg));
             }
             else
@@ -61,8 +61,10 @@ namespace ChessBotv2
                             OldY = botmovecoordsold.Item1,
                             NewX = botmovecoordsnew.Item2,
                             NewY = botmovecoordsnew.Item1,
-                            Possiblemoves = board.Moves()
+                            Fen= board.ToFen()
                         }));
+                var wmovemsg = new { Opcode = 6, Possiblemoves = board.Moves() };
+                Server.SendMessage(Player1, JsonConvert.SerializeObject(wmovemsg));
             }
             
         }
