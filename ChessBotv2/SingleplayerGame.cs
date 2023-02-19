@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ namespace ChessBotv2
 {
     public class SingleplayerGame :Game
     {
+        Random r = new Random();
         public string Player1 { get; set; }        
 
         public SingleplayerGame()
@@ -27,12 +29,68 @@ namespace ChessBotv2
         {
             Console.WriteLine("Singleplayer game has started");
             var moves = board.Moves();
-            var gamedata = new { Opcode = 4, Gameid = Id, Fen = board.ToFen(), Playerid = Player1, Color="white"};
+            SetPlayerColors();
+            Console.WriteLine("White player: "+White);
+            var gamedata = new { Opcode = 4, Gameid = Id, Fen = board.ToFen(), Playerid = Player1, Color = GetPlayerColor() };
             Server.SendMessage(Player1, JsonConvert.SerializeObject(gamedata));
-            var bmovemsg = new { Opcode = 6, Moves = moves };
-            Server.SendMessage(Player1, JsonConvert.SerializeObject(bmovemsg));
+            if (GetPlayerColor() == "white")
+            {
+                var bmovemsg = new { Opcode = 6, Moves = moves };
+                Server.SendMessage(Player1, JsonConvert.SerializeObject(bmovemsg));
+            }
+            else
+            {
+                //BOT MOVE
+                string botmove = bot.GetBestMove();
+                PlayerMove(botmove);
+
+                //Le kell checkolni később hogy tényleg 4 elemű e a karakterkód, mert lehet 5 elemű is
+                var botmovecoordsold = Game.GetCoordinateFromZone(botmove[0] + "" + botmove[1]);
+                var botmovecoordsnew = Game.GetCoordinateFromZone(botmove[2] + "" + botmove[3]);
+
+                //Checking castle. MB not a good method. Have to check it later...
+
+                Console.WriteLine("Bot moved: " + botmove);
+                Server.SendMessage(
+                    Player1,
+                    JsonConvert.SerializeObject(
+                        new
+                        {
+                            Opcode = 5,
+                            OldX = botmovecoordsold.Item2,
+                            OldY = botmovecoordsold.Item1,
+                            NewX = botmovecoordsnew.Item2,
+                            NewY = botmovecoordsnew.Item1,
+                            Possiblemoves = board.Moves()
+                        }));
+            }
+            
+        }
+        public void SetPlayerColors()
+        {
+            string whiteplayer;
+            var val = r.Next(2);
+            if (val % 2 == 0)
+            {
+                White = Player1.ToString();
+            }
+            else
+            {
+                White = "bot";
+            }
         }
 
+        public string GetPlayerColor()
+        {
+            if (White == Player1)
+            {
+                return "white";
+            }
+            else
+            {
+                return "black";
+            }
+        }
         public void ExecuteCastleIfNeeded(int OldcoordX, int OldcoordY, int NewcoordX, int NewcoordY)
         {
             if (OldcoordY == 4 && OldcoordX == 0) // Ha A lépő játékos a király

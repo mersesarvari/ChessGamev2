@@ -10,7 +10,7 @@ namespace ChessBotv2
 {
     public class MultiplayerGame:Game
     {
-
+        Random r = new Random();
         public int Time1 { get; set; }
         public int Time2 { get; set; }
         public string Player1 { get; set; }
@@ -31,8 +31,10 @@ namespace ChessBotv2
             if (Gametype == GameType.Multiplayer && Player1.ToString().Length > 0 && Player2.ToString().Length > 0)
             {
                 //Fel kellett cserélni itt a színeket valamiért. tuti valami bug...
-                var gamedataWhite = new { Opcode = 4, Gameid = Id, Fen = board.ToFen(), Playerid = Player1, Color="white" };
-                var gamedataBlack = new { Opcode = 4, Gameid = Id, Fen = board.ToFen(), Playerid = Player2, Color="black"};
+                SetPlayerColors();
+                Console.WriteLine("White player: " + White);
+                var gamedataWhite = new { Opcode = 4, Gameid = Id, Fen = board.ToFen(), Playerid = Player1, Color=GetPlayerColor(Player1) };
+                var gamedataBlack = new { Opcode = 4, Gameid = Id, Fen = board.ToFen(), Playerid = Player2, Color=GetPlayerColor(Player2)};
                 Server.SendMessage(Player1.ToString(), JsonConvert.SerializeObject(gamedataWhite));
                 Server.SendMessage(Player2.ToString(), JsonConvert.SerializeObject(gamedataBlack));
                 //Sending players the basic possible moves
@@ -40,6 +42,31 @@ namespace ChessBotv2
                 var wmovemsg = new { Opcode = 6, Custom = whitemoves };
                 Server.SendMessage(Player1, JsonConvert.SerializeObject(wmovemsg));
 
+            }
+        }
+        public void SetPlayerColors()
+        {
+            string whiteplayer;
+            var val = r.Next(2);
+            if (val % 2 == 0)
+            {
+                White= Player1.ToString();
+            }
+            else
+            {
+                White = Player2.ToString();
+            }
+        }
+
+        public string GetPlayerColor(string playerid)
+        {
+            if (White == playerid)
+            {
+                return "white";
+            }
+            else
+            {
+                return "black";
             }
         }
         public void ExecuteIfGameEnded(string winningplayer)

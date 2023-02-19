@@ -10,7 +10,6 @@ var possiblemovesfromposition = null;
 //var movetarget = null;
 var table = document.getElementById("chess-board");
 table.addEventListener('click', function (e) {
-    SetColor();
     tdElement = document.getElementById("td-" + e.target.id.split('-')[1]);
     //ha targetelni szeretnék egy bábut
     if (e.target.className.includes(color) && !pieceselected) {

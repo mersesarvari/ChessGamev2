@@ -1,4 +1,5 @@
-let socket = new WebSocket("ws://localhost:5000/chess");
+
+ 
 var gameid = null;
 var id = null;
 var currentgame = "";

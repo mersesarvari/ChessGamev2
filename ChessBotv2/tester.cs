@@ -9,34 +9,31 @@ namespace ChessBotv2
 {
     public class tester
     {
-        public List<ChessBoardWithId> BoardList { get; set; }
+        ChessBoard board;
+        Bot bot;
+        Game game;
         public tester()
         {
-            BoardList= new List<ChessBoardWithId>();
+            board = new ChessBoard();
+            game = new Game();
+            bot = new Bot(game);
         }
-        public void DrawChessBoard(int index)
-        {
-            Console.WriteLine(BoardList[index].Board.ToAscii());
-        }
-        public void MoveBoard(int index, string move)
-        {
-            BoardList[index].Board.Move(move);
-        }
-        public void AddChessBoard()
-        {
-            BoardList.Add(new ChessBoardWithId());
-        }
-    }
 
-    public class ChessBoardWithId
-    {
-        public Guid Id { get; set; }
-        public ChessBoard Board { get; set; }
-
-        public ChessBoardWithId()
+        public void PawnPromotionTest()
         {
-            Id = Guid.NewGuid();
-            this.Board = new ChessBoard();
+            //Seems like it working
+            string fenstring = "8/P7/8/8/8/8/8/1K4k1 w - - 0 1";
+            board = ChessBoard.LoadFromFen(fenstring);
+            bot.stockfish.SetFenPosition(fenstring);
+            
+            Console.WriteLine(bot.stockfish.GetBoardVisual());
+            var bestmove = bot.stockfish.GetBestMove();
+            Console.WriteLine("Bot best move: "+ bestmove);
+            bestmove = bestmove.Remove(4);
+            board.Move(bestmove);
+            Console.WriteLine(board.ToAscii());
+
         }
+
     }
 }

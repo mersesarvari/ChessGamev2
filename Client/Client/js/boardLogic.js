@@ -76,69 +76,38 @@ function ConvertToFen() {
     return fenstring;
 }
 function BoardCreator() {
-    //Color white
-    if (color === "white") {
-        console.log("You are the white player");
-        //Resetting board
-        var brd = document.getElementById("table");
-        brd.remove();
-        var brd2 = document.createElement("tbody");
-        brd2.id = "table";
-        document.getElementById('chess-board').appendChild(brd2);
+    console.log("You are the " + color + " player");
+    //Resetting board
+    var brd = document.getElementById("table");
+    brd.remove();
+    var brd2 = document.createElement("tbody");
+    brd2.id = "table";
+    document.getElementById('chess-board').appendChild(brd2);
 
-        //Creating rows
-        for (let i = 7; i > -1; i--) {
-            const tr = document.createElement("tr");
-            tr.className = "tr-" + i;
-            tr.id = "tr-" + i;
-            document.getElementById('table').appendChild(tr);
+    //Creating rows
+    for (let i = 7; i > -1; i--) {
+        const tr = document.createElement("tr");
+        tr.className = "tr-" + i;
+        tr.id = "tr-" + i;
+        document.getElementById('table').appendChild(tr);
 
-            //creating columns
-            for (let j = 0; j < 8; j++) {
-                const td = document.createElement("td");
-                td.id = "td-" + j + "" + i;
-                td.className = SetZoneColor(j, i);
-                //td.textContent = j + "" + i;
-                document.getElementById("tr-" + i).appendChild(td);
-                //creating image sources
-                const image = document.createElement("div");
-                image.id = "div-" + j + i;
-                image.className = "free";
-                document.getElementById("td-" + j + "" + i).appendChild(image);
-            }
+        //creating columns
+        for (let j = 0; j < 8; j++) {
+            const td = document.createElement("td");
+            td.id = "td-" + j + "" + i;
+            td.className = SetZoneColor(j, i);
+            //td.textContent = j + "" + i;
+            document.getElementById("tr-" + i).appendChild(td);
+            //creating image sources
+            const image = document.createElement("div");
+            image.id = "div-" + j + i;
+            image.className = "free";
+            document.getElementById("td-" + j + "" + i).appendChild(image);
         }
-
     }
-    else {
-        console.log("You are the black player");
-        //Resetting board
-        var brd = document.getElementById("table");
-        brd.remove();
-        var brd2 = document.createElement("tbody");
-        brd2.id = "table";
-        document.getElementById('chess-board').appendChild(brd2);
-
-        //Creating rows
-        for (let i = 7; i > -1; i--) {
-            const tr = document.createElement("tr");
-            tr.className = "tr-" + i;
-            tr.id = "tr-" + i;
-
-            //creating columns
-            for (let j = 0; j < 8; j++) {
-
-                const td = document.createElement("td");
-                td.id = "td-" + j + "" + i;
-                td.className = SetZoneColor(j, i);
-                //td.innerHTML = i + "|" + j;
-                document.getElementById("tr-" + i).appendChild(td);
-                //creating image sources
-                const image = document.createElement("div");
-                image.id = "div-" + j + i;
-                image.className = "free";
-                document.getElementById("td-" + i + "" + j).appendChild(image);
-            }
-        }
+    //Color white
+    if (color === "black") {
+        flipBoard();
     }
 
 }
@@ -164,6 +133,15 @@ function DrawPieces() {
         }
     }
 }
+
+function flipBoard() {
+    var board = document.getElementById('chess-board');
+    board.style.transform = 'rotate(180deg)';
+    var divsintable = table.getElementsByTagName('div');
+    for (var i = 0; i < divsintable.length; i++) {
+        divsintable[i].style.transform = 'rotate(180deg)';
+    }
+}
 function MovePiece(oldcoord, newcoord)
 {
     var original = document.getElementById('div-' + oldcoord);
@@ -178,51 +156,28 @@ function MovePiece(oldcoord, newcoord)
     original.className = "free"; 
 }
 function SetZoneColor(i, j) {
-    //Even 
-    if ((i % 2 === 0 && j % 2 === 0) || (i % 2 === 1 && j % 2 === 1)) {
-        return "dark";
+    //Even
+    if (color == "white") {
+        if ((i % 2 === 0 && j % 2 === 0) || (i % 2 === 1 && j % 2 === 1)) {
+
+            return "dark";
+        }
+        else {
+            return "light";
+        }
     }
     else {
-        return "light";
-    }
-}
-//Sets the colors of the pieces
-function SetColor() {
-    //Setting colors for the specific color(black or white)
+        if ((i % 2 === 0 && j % 2 === 0) || (i % 2 === 1 && j % 2 === 1)) {
 
-    if (color === "white") {
-        for (let i = 7; i > -1; i--) {
-            for (let j = 7; j > -1; j--) {
-                var currentzone = document.getElementById('td-' + i + j);
-                currentzone.style.backgroundColor = "";
-                if (color === "white" && (i % 2 === 0 && j % 2 === 0) || (i % 2 === 1 && j % 2 === 1)) {
-                    currentzone.classList.add("dark");
-                    currentzone.classList.remove("light");
-                }
-                else {
-                    currentzone.classList.add("light");
-                    currentzone.classList.remove("dark");
-                }
-            }
+            return "light";
+        }
+        else {
+            return "dark";
         }
     }
-    if (color === "black") {
-        for (let i = 7; i > -1; i--) {
-            for (let j = 7; j > -1; j--) {
-                var currentzone = document.getElementById('td-' + i + j);
-                currentzone.style.backgroundColor = "";
-                if (color === "white" && (i % 2 === 0 && j % 2 === 0) || (i % 2 === 1 && j % 2 === 1)) {
-                    currentzone.classList.add("dark");
-                    currentzone.classList.remove("light");
-                }
-                else {
-                    currentzone.classList.add("light");
-                    currentzone.classList.remove("dark");
-                }
-            }
-        }
-    }
+
 }
+
 function GetPossibleMoves(fromx, fromy) {
     var PositionstoColor = [];
     for (let i = 0; i < possiblemoves.length; i++) {

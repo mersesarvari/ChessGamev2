@@ -22,6 +22,8 @@ namespace ChessBotv2
         public List<string> moveList { get; set; }
         public int turn { get; set; }
 
+        public string White { get; set; }
+
         public static string[,] Zones = new string[8, 8] {
                 { "a1", "a2", "a3", "a4", "a5", "a6", "a7", "a8" },
                 { "b1", "b2", "b3", "b4", "b5", "b6", "b7", "b8" },
@@ -45,16 +47,9 @@ namespace ChessBotv2
         public void PlayerMove(string move)
         {
             //Hame to manage the situation when a  more then 4 character(pawn is reaching the end of the board)
-            if (move.Length == 4)
-            {
-                moveList.Add(move);
-                board.Move(move);
-                Console.WriteLine("Player moved:");
-            }
-            if (move.Length > 4)
-            {
-                throw new Exception("Pawn has reached his end..");
-            }
+            moveList.Add(move.Remove(4));
+            board.Move(move.Remove(4));
+            Console.WriteLine("Player moved:");
 
             Console.WriteLine(board.ToAscii());
         }
@@ -82,6 +77,8 @@ namespace ChessBotv2
         public string Converter(string pos1, string pos2)
         {
             return pos1 + "" + pos2;
-        }             
+        }
+
+        
     }
 }

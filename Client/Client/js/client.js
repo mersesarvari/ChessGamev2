@@ -1,28 +1,50 @@
+var socket;
 
 
-socket.onopen = function (e) {
-    //alert("[Server] Connected succesfully");
-    //alert("Sending to server");
-    //socket.send("My name is John");
-    //Parser(e.data);
-};
+function ConnectSingleplayer() {
+    var singleplayersocket = new WebSocket("ws://localhost:5000/singleplayer");
+    socket = singleplayersocket;
+    singleplayersocket.onopen = function (e) {
+        console.log("Connected to the singleplayer server");
+    };
 
-socket.onmessage = function (event) {
-    //alert(`[message] Data received from server: ${event.data}`);
-    //console.log(`[message] Data received from server: ${event.data}`);
-    Parser(event.data);
-};
+    singleplayersocket.onmessage = function (event) {
+        Parser(event.data);
+    };
 
-socket.onclose = function (event) {
-    if (event.wasClean) {
-        alert(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
-    } else {
-        // e.g. server process killed or network down
-        // event.code is usually 1006 in this case
-        alert('[close] Connection died');
-    }
-};
+    singleplayersocket.onclose = function (event) {
+        if (event.wasClean) {
+            alert(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
+        } else {
+            alert('[close] Connection died');
+        }
+    };
 
-socket.onerror = function (error) {
-    alert(`[error]`);
-};
+    singleplayersocket.onerror = function (error) {
+        alert(`[error]: `+error);
+    };
+}
+
+function ConnectMultiplayer() {
+    var multiplayersocket = new WebSocket("ws://localhost:5000/multiplayer");
+    socket = multiplayersocket;
+    multiplayersocket.onopen = function (e) {
+        console.log("Connected to the multiplayer server");
+    };
+
+    multiplayersocket.onmessage = function (event) {
+        Parser(event.data);
+    };
+
+    multiplayersocket.onclose = function (event) {
+        if (event.wasClean) {
+            alert(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
+        } else {
+            alert('[close] Connection died');
+        }
+    };
+
+    multiplayersocket.onerror = function (error) {
+        alert(`[error]: ` + error);
+    };
+}
