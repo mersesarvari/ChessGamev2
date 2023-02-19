@@ -61,22 +61,24 @@ namespace ChessBotv2
             
             while (true)
             {
-                var playersinlobby = Server.Players.FindAll(x => x.Searching==true);
-                if (playersinlobby.Count > 0)
+                if (Server.Players.Count > 0)
                 {
-                    SingleplayerGame currentgame = new SingleplayerGame();
-                    currentgame.AddPlayer(playersinlobby[0].Id);
-                    playersinlobby[0].Searching = false;
+                    var playersinlobby = Server.Players.FindAll(x => x.Searching == true);
+                    if (playersinlobby.Count > 0)
+                    {
+                        SingleplayerGame currentgame = new SingleplayerGame();
+                        currentgame.AddPlayer(playersinlobby[0].Id);
+                        playersinlobby[0].Searching = false;
 
-                    Console.WriteLine("[Bot game created]:" + currentgame.Id);
-                    currentgame.StartGame();
-                    Server.singleGames.Add(currentgame);
-                    
+                        Console.WriteLine("[Bot game created]:" + currentgame.Id);
+                        currentgame.StartGame();
+                        Server.singleGames.Add(currentgame);
+
+                    }
+                    else
+                    {
+                    }
                 }
-                else
-                {
-                }
-                Thread.Sleep(3000);
             }
             
         }
