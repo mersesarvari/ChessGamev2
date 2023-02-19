@@ -37,8 +37,14 @@
     min-width: 34px;
 }
 
-.chess-board td.light {
+.light {
     background: #fac77b;
+}
+.dark {
+    background: #754d20;
+}
+.yellow {
+    background: #f5ef42;
 }
 
 .chess-board td.lightpossible {
@@ -47,13 +53,9 @@
     background-size: 100%;
 }
 
-.class-board td.yellow {
-    background: rgb(228, 228, 4);
-}
 
-.chess-board td.dark {
-    background: #754d20;
-}
+
+
 
 .chess-board td.darkpossible {
     background: #754d20;

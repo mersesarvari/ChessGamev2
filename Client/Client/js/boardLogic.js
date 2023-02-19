@@ -95,7 +95,7 @@ function BoardCreator() {
         for (let j = 0; j < 8; j++) {
             const td = document.createElement("td");
             td.id = "td-" + j + "" + i;
-            td.className = SetZoneColor(j, i);
+            //td.className = SetZoneColor(j, i);
             //td.textContent = j + "" + i;
             document.getElementById("tr-" + i).appendChild(td);
             //creating image sources
@@ -105,11 +105,19 @@ function BoardCreator() {
             document.getElementById("td-" + j + "" + i).appendChild(image);
         }
     }
+    SetBoardColors();
     //Color white
     if (color === "black") {
         flipBoard();
     }
-
+    
+}
+function SetBoardColors() {
+    for (var i = 0; i < 8; i++) {
+        for (var j = 0; j < 8; j++) {
+            document.getElementById('td-' + i + "" + j).className = SetZoneColor(i, j);
+        }
+    }
 }
 function DrawPieces() {
     BOARD = ConvertFromFEN(FEN);
@@ -157,24 +165,22 @@ function MovePiece(oldcoord, newcoord)
 }
 function SetZoneColor(i, j) {
     //Even
-    if (color == "white") {
-        if ((i % 2 === 0 && j % 2 === 0) || (i % 2 === 1 && j % 2 === 1)) {
+    if ((i % 2 === 0 && j % 2 === 0) || (i % 2 === 1 && j % 2 === 1)) {
 
-            return "dark";
-        }
-        else {
-            return "light";
-        }
+        return "dark";
     }
     else {
-        if ((i % 2 === 0 && j % 2 === 0) || (i % 2 === 1 && j % 2 === 1)) {
-
-            return "light";
-        }
-        else {
-            return "dark";
-        }
+        return "light";
     }
+    //else {
+    //    if ((i % 2 === 0 && j % 2 === 0) || (i % 2 === 1 && j % 2 === 1)) {
+
+    //        return "light";
+    //    }
+    //    else {
+    //        return "dark";
+    //    }
+    //}
 
 }
 

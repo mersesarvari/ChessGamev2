@@ -51,6 +51,7 @@ function Targeting(e) {
     pieceselected = true;
     console.log("Piece selected for moving:" + e.target.className);
     selectedpiece = e.target.id.split('-')[1];
+    document.getElementById('td-' + selectedpiece).className = 'yellow';
     //Be kell tölteni a validmoveokat.
     ColorPossibleMoves(selectedpiece[0], selectedpiece[1]);
 }
@@ -58,6 +59,8 @@ function ClearTarget(){
     pieceselected = false;
     selectedpiece = null;
 }
+
+
 
 function Move(e) {
     if (pieceselected && myturn) {
