@@ -14,7 +14,7 @@ using System.ComponentModel;
 
 namespace ChessBotv2
 {
-    public class ChessServer : WebSocketBehavior
+    public class ConnectionManager : WebSocketBehavior
     {
         protected override void OnOpen()
         {
@@ -28,44 +28,41 @@ namespace ChessBotv2
         {
 
             var d = JsonConvert.DeserializeObject<Message>(e.Data);
-            if (d.Opcode == 5)
+            //Multiplayer Game. Not working yet.
+            if (d.Opcode == 5 && Server.multiGames.First(x => x.Id == d.Gameid) != null)
             {
                 var currentgame = Server.multiGames.FirstOrDefault(x => x.Id == d.Gameid);
                 if (currentgame is MultiplayerGame)
                 {
-                    var old = MultiplayerGame.Zones[d.OldcoordY, d.OldcoordX];
-                    var n = MultiplayerGame.Zones[d.NewcoordY, d.NewcoordX];
-                    if ((currentgame as MultiplayerGame).board.IsValidMove(d.From + "" + d.To))
+                    var old = Game.Zones[d.OldcoordY, d.OldcoordX];
+                    var n = Game.Zones[d.NewcoordY, d.NewcoordX];
+                    if (currentgame.board.IsValidMove(old + "" + n))
                     {
-                        (currentgame as MultiplayerGame).PlayerMove(d.From + "" + d.To);
+                        //Checking castlemove for the player
+                        currentgame.ExecuteCastleIfNeeded(d.OldcoordX, d.OldcoordY, d.NewcoordX, d.NewcoordY);
+
+                        //Player Moving
+                        currentgame.PlayerMove(old + n);
+                        Console.WriteLine("Player moved: " + old + n);
+                        Server.SendMessage(currentgame.Player1, JsonConvert.SerializeObject(new { Opcode = 5, OldX = d.OldcoordX, OldY = d.OldcoordY, NewX = d.NewcoordX, NewY = d.NewcoordY }));
+                        Server.SendMessage(currentgame.Player2, JsonConvert.SerializeObject(new { Opcode = 5, OldX = d.OldcoordX, OldY = d.OldcoordY, NewX = d.NewcoordX, NewY = d.NewcoordY }));
+                        //Player WON
+                        currentgame.ExecuteIfGameEnded(d.Playerid);
                     }
                 }
-                else
-                {
-                    throw new Exception("Error game is invalid.");
-                }
             }
-            if (d.Opcode == 4)
+            //Singleplayer Move command
+            if (d.Opcode == 4 && Server.singleGames.First(x => x.Id == d.Gameid)!=null)
             {
                 var currentgame = Server.singleGames.FirstOrDefault(x => x.Id == d.Gameid);
                 if (currentgame is SingleplayerGame)
                 {
-                    var old = SingleplayerGame.Zones[d.OldcoordY, d.OldcoordX];
-                    var n = SingleplayerGame.Zones[d.NewcoordY, d.NewcoordX];
+                    var old = Game.Zones[d.OldcoordY, d.OldcoordX];
+                    var n = Game.Zones[d.NewcoordY, d.NewcoordX];
                     if (currentgame.board.IsValidMove(old + "" + n))
                     {
                         //Checking castlemove for the player
-                        if (d.OldcoordY == 4 && d.OldcoordX == 0) // Ha A lépő játékos a király
-                        {
-                            if (d.NewcoordY == 6 && d.NewcoordX == 0) // Ha jobbra castle
-                            {
-                                Server.SendMessage(d.Playerid, JsonConvert.SerializeObject(new { Opcode = 5, OldX = 0, OldY = 7, NewX = 0, NewY = 5 }));
-                            }
-                            if (d.NewcoordY == 2 && d.NewcoordX == 0) // Ha jobbra castle
-                            {
-                                Server.SendMessage(d.Playerid, JsonConvert.SerializeObject(new { Opcode = 5, OldX = 0, OldY = 0, NewX = 0, NewY = 3 }));
-                            }
-                        }
+                        currentgame.ExecuteCastleIfNeeded(d.OldcoordX, d.OldcoordY, d.NewcoordX, d.NewcoordY);
 
                         //Player Moving
                         currentgame.PlayerMove(old + n);
@@ -83,17 +80,10 @@ namespace ChessBotv2
                         //Le kell checkolni később hogy tényleg 4 elemű e a karakterkód, mert lehet 5 elemű is
                         var botmovecoordsold = Game.GetCoordinateFromZone(botmove[0] +""+ botmove[1]);
                         var botmovecoordsnew = Game.GetCoordinateFromZone(botmove[2] + "" + botmove[3]);
-                        if (old[0] == 4 && old[1] == 7) // Ha A lépő játékos a király
-                        {
-                            if (n[0] == 6 && n[1] == 7) // Ha jobbra castle
-                            {
-                                Server.SendMessage(d.Playerid, JsonConvert.SerializeObject(new { Opcode = 5, OldX = 7, OldY = 7, NewX = 7, NewY = 5 }));
-                            }
-                            if (n[0] == 2 && n[1] == 7) // Ha jobbra castle
-                            {
-                                Server.SendMessage(d.Playerid, JsonConvert.SerializeObject(new { Opcode = 5, OldX = 0, OldY = 7, NewX = 7, NewY = 3 }));
-                            }
-                        }
+
+                        //Checking castle. MB not a good method. Have to check it later...
+                        currentgame.ExecuteCastleIfNeeded(old[0], old[1], n[0], n[1]);
+
                         Console.WriteLine("Bot moved: "+botmove);
                         Server.SendMessage(
                             d.Playerid, 

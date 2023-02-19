@@ -42,10 +42,29 @@ namespace ChessBotv2
 
             }
         }
-        public void PlayerMove(string move)
+        public void ExecuteIfGameEnded(string winningplayer)
         {
-            moveList.Add(move);
-            board.Move(new Move(move[0] + "" + move[1], move[2] + "" + move[3]));
+            if (board.IsEndGame)
+            {
+                if (winningplayer == Player1)
+                {
+                    Server.SendMessage(Player1, JsonConvert.SerializeObject(new { Opcode = 8, message = "Congratulation! You won the game!" }));
+                    Server.SendMessage(Player2, JsonConvert.SerializeObject(new { Opcode = 8, message = "You lost the game, Better luck next time!" }));
+                }
+                else if (winningplayer == Player2)
+                {
+                    Server.SendMessage(Player2, JsonConvert.SerializeObject(new { Opcode = 8, message = "Congratulation! You won the game!" }));
+                    Server.SendMessage(Player1, JsonConvert.SerializeObject(new { Opcode = 8, message = "You lost the game, Better luck next time!" }));
+                }
+                //Döntetlen???
+                else
+                {
+                    Server.SendMessage(Player1, JsonConvert.SerializeObject(new { Opcode = 8, message = "Its a Draw" }));
+                    Server.SendMessage(Player2, JsonConvert.SerializeObject(new { Opcode = 8, message = "Its a Draw" }));
+                }
+                
+            }
+                
         }
         public string GetActivePlayer()
         {
@@ -68,18 +87,35 @@ namespace ChessBotv2
             }
         }
 
-        public void SendMessage(Message message, string id)
+        public void ExecuteCastleIfNeeded(int OldcoordX, int OldcoordY, int NewcoordX, int NewcoordY)
         {
-            Server.SendMessage(id, JsonConvert.SerializeObject(message));
-        }
+            if (OldcoordY == 4 && OldcoordX == 0) // Ha A lépő játékos a király
+            {
+                if (NewcoordY == 6 && NewcoordX == 0) // Ha jobbra castle
+                {
+                    Server.SendMessage(Player1, JsonConvert.SerializeObject(new { Opcode = 5, OldX = 0, OldY = 7, NewX = 0, NewY = 5 }));
+                    Server.SendMessage(Player2, JsonConvert.SerializeObject(new { Opcode = 5, OldX = 0, OldY = 7, NewX = 0, NewY = 5 }));
+                }
+                if (NewcoordY == 2 && NewcoordX == 0) // Ha jobbra castle
+                {
+                    Server.SendMessage(Player1, JsonConvert.SerializeObject(new { Opcode = 5, OldX = 0, OldY = 0, NewX = 0, NewY = 3 }));
+                    Server.SendMessage(Player2, JsonConvert.SerializeObject(new { Opcode = 5, OldX = 0, OldY = 0, NewX = 0, NewY = 3 }));
 
-        public (string pos1, string pos2) Converter(string stockfish)
-        {
-            return (pos1: stockfish[0] + "" + stockfish[1], pos2: stockfish[2] + "" + stockfish[3]);
-        }
-        public string Converter(string pos1, string pos2)
-        {
-            return pos1 + "" + pos2;
+                }
+            }
+            if (OldcoordY == 4 && OldcoordX == 7) // Ha A lépő játékos a király
+            {
+                if (NewcoordY == 6 && NewcoordX == 7) // Ha jobbra castle
+                {
+                    Server.SendMessage(Player1, JsonConvert.SerializeObject(new { Opcode = 5, OldX = 7, OldY = 7, NewX = 7, NewY = 5 }));
+                    Server.SendMessage(Player2, JsonConvert.SerializeObject(new { Opcode = 5, OldX = 7, OldY = 7, NewX = 7, NewY = 5 }));
+                }
+                if (NewcoordY == 2 && NewcoordX == 7) // Ha jobbra castle
+                {
+                    Server.SendMessage(Player1, JsonConvert.SerializeObject(new { Opcode = 5, OldX = 0, OldY = 7, NewX = 3, NewY = 7 }));
+                    Server.SendMessage(Player2, JsonConvert.SerializeObject(new { Opcode = 5, OldX = 0, OldY = 7, NewX = 3, NewY = 7 }));
+                }
+            }
         }
     }
 }

@@ -48,6 +48,11 @@ namespace ChessBotv2
             //Console.WriteLine("2,1 element of the board:" + board[Zones[2,1]]);            
             turn= 0;
         }
+        public void PlayerMove(string move)
+        {
+            moveList.Add(move);
+            board.Move(new Move(move[0] + "" + move[1], move[2] + "" + move[3]));
+        }
         public static (int, int) GetCoordinateFromZone(string zone)
         {
             for (int i = 0; i < 8; i++)

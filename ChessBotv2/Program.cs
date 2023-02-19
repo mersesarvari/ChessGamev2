@@ -17,7 +17,7 @@ namespace ChessBotv2
             Bot.GetBot();
             Server.Instance.Start();
             Console.WriteLine("Server started on ws://localhost:5000");
-            Server.Instance.AddWebSocketService<ChessServer>("/chess");
+            Server.Instance.AddWebSocketService<ConnectionManager>("/chess");
             
             Thread t = new Thread(() => Server.CreateBotGame());
 
