@@ -30,9 +30,10 @@ function Parser(data) {
     //Moving
     else if (obj.Opcode === 5) {
         //Itt kéne checkolni a soundokat.
-        MovePiece(obj.OldY + "" + obj.OldX, obj.NewY + "" + obj.NewX);
+        //MovePiece(obj.OldY + "" + obj.OldX, obj.NewY + "" + obj.NewX);
         if (obj.Fen !== undefined) {
             FEN = obj.Fen;
+            DrawPieces(FEN);
             console.log(FEN);
         }
         ResetPossibleMoves();

@@ -10,12 +10,12 @@ function ConvertFromFEN(fenstring) {
         line = [];
         for (let chars = 0; chars < fenstring.split('/')[i].length; chars++) {
             var current = fenstring.split('/')[i][chars];
-            if (current.toUpperCase() === current) {
-                current = current.toLowerCase();
-            }
-            else if(current.toLowerCase() === current) {
-                current = current.toUpperCase();
-            }
+            //if (current.toUpperCase() === current) {
+            //    current = current.toLowerCase();
+            //}
+            //else if(current.toLowerCase() === current) {
+            //    current = current.toUpperCase();
+            //}
             //CHARACTER IS NUMBER
             //Checking empty row
             if (current == "8") {
@@ -41,40 +41,10 @@ function ConvertFromFEN(fenstring) {
         _board[i] = line;
     };
     document.getElementById("fenstringholder").innerHTML = fenstring;
-    return _board;
+    return _board.reverse();
 
 };
-function ConvertToFen() {
-    var current = BOARD;
-    //console.log("Board");
-    //console.log(BOARD);
-    //console.log(current);
-    var fenstring = "";
-    var numbercounter = 0;
-    for (let i = 0; i < 8; i++) {
-        for (let j = 0; j < 8; j++) {
-            numbercounter = 0;
 
-            while (current[i][j] === '0') {
-                numbercounter++;
-                j++
-            }
-            if (numbercounter > 0) {
-                fenstring += numbercounter;
-            }
-            if (current[i][j] !== '0' && current[i][j] !== undefined) {
-                fenstring += current[i][j];
-            }
-        }
-        if (i < 7) {
-            fenstring += "/"
-        }
-    }
-    Logger("ConvertToFen", fenstring);
-    document.getElementById("fenstringholder").innerHTML = fenstring;
-    FEN = fenstring;
-    return fenstring;
-}
 function BoardCreator() {
     console.log("You are the " + color + " player");
     //Resetting board
@@ -105,35 +75,40 @@ function BoardCreator() {
             document.getElementById("td-" + j + "" + i).appendChild(image);
         }
     }
-    SetBoardColors();
+    SetBoardColor();
     //Color white
     if (color === "black") {
         flipBoard();
     }
     
 }
-function SetBoardColors() {
-    for (var i = 0; i < 8; i++) {
-        for (var j = 0; j < 8; j++) {
-            document.getElementById('td-' + i + "" + j).className = SetZoneColor(i, j);
+function SetBoardColor() {
+    for (let i = 0; i < 8; i++) {
+        for (let j = 0; j < 8; j++) {
+            var currentTD = document.getElementById("td-" + i + j);
+            if ((i % 2 == 0 && j % 2 == 0) || (i % 2 == 1 && j % 2 == 1)) {
+                currentTD.className = 'dark';
+            }
+            else {
+                currentTD.className = 'light';
+            }
         }
     }
 }
-function DrawPieces() {
-    BOARD = ConvertFromFEN(FEN);
-    for (let i = 0; i < 8; i++) {
+function DrawPieces(_fen) {
+    BOARD = ConvertFromFEN(_fen);
+    var divs = document.getElementsByTagName('div');
+    for (var i = 0; i < divs.length; i++) {
+        divs[i].className = "free";
+    }
+    for (let i = 0; i <8; i++) {
         for (let j = 0; j < 8; j++) {
-            //Clearing wrong positions
-            if (BOARD[j][i] === '0') {
-                var tmp = document.getElementById('div-' + i + j);
-                tmp.className = 'free';
-            }
             //Adding Pieces as images
             for (let x = 0; x < dictionary.length; x++) {
-                if (BOARD[j][i] === dictionary[x][0]) {
+                if (BOARD[i][j] === dictionary[x][0]) {
                     //Select image source
-                    if (BOARD[j][i] !== "0") {
-                        var tmp = document.getElementById('div-' + i + j);
+                    if (BOARD[i][j] !== "0") {
+                        var tmp = document.getElementById('div-' + j + i);
                         tmp.className = dictionary[x][1].toString();
                     }
                 }

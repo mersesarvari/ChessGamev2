@@ -38,13 +38,10 @@ namespace ChessBotv2
                     var n = Game.Zones[d.NewcoordY, d.NewcoordX];
                     if (currentgame.board.IsValidMove(old + "" + n))
                     {
-                        //Checking castlemove for the player
-                        currentgame.ExecuteCastleIfNeeded(d.OldcoordX, d.OldcoordY, d.NewcoordX, d.NewcoordY);
-
                         //Player Moving
                         currentgame.PlayerMove(old + n);
                         Console.WriteLine("Player moved: " + old + n);
-                        Server.SendMessage(d.Playerid, JsonConvert.SerializeObject(new { Opcode = 5, OldX=d.OldcoordX, OldY=d.OldcoordY, NewX=d.NewcoordX, NewY=d.NewcoordY, Fen=currentgame.board.ToFen()}));
+                        Server.SendMessage(d.Playerid, JsonConvert.SerializeObject(new { Opcode = 5, Fen=currentgame.board.ToFen()}));
                         //Player WON
                         if (currentgame.board.IsEndGame)
                         {
@@ -53,26 +50,8 @@ namespace ChessBotv2
                         //BOT MOVE
                         string botmove =currentgame.bot.GetBestMove();
                         currentgame.PlayerMove(botmove);
-
-                        //Le kell checkolni később hogy tényleg 4 elemű e a karakterkód, mert lehet 5 elemű is
-                        var botmovecoordsold = Game.GetCoordinateFromZone(botmove[0] +""+ botmove[1]);
-                        var botmovecoordsnew = Game.GetCoordinateFromZone(botmove[2] + "" + botmove[3]);
-
-                        //Checking castle. MB not a good method. Have to check it later...
-                        currentgame.ExecuteCastleIfNeeded(old[0], old[1], n[0], n[1]);
-
+                        Server.SendMessage(d.Playerid, JsonConvert.SerializeObject(new { Opcode = 5, Fen = currentgame.board.ToFen() }));
                         Console.WriteLine("Bot moved: "+botmove);
-                        Server.SendMessage(
-                            d.Playerid, 
-                            JsonConvert.SerializeObject(
-                                new { 
-                                    Opcode = 5, 
-                                    OldX = botmovecoordsold.Item2, 
-                                    OldY = botmovecoordsold.Item1, 
-                                    NewX = botmovecoordsnew.Item2, 
-                                    NewY = botmovecoordsnew.Item1,
-                                    Fen = currentgame.board.ToFen()
-                                }));
                         Server.SendMessage(currentgame.Player1, JsonConvert.SerializeObject(new { Opcode = 6, Possiblemoves = currentgame.board.Moves() }));
                         if (currentgame.board.IsEndGame)
                         {

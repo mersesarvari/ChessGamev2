@@ -63,7 +63,7 @@ function SendMoveToServer(oldcoord, newcoord) {
 }
 
 function Targeting(e) {
-    SetBoardColors();
+    SetBoardColor();
     pieceselected = true;
     console.log("Piece selected for moving:" + e.target.className);
     selectedpiece = e.target.id.split('-')[1];
@@ -75,7 +75,7 @@ function Targeting(e) {
 function ClearTarget(){
     pieceselected = false;
     selectedpiece = null;
-    SetBoardColors();
+    SetBoardColor();
 }
 
 
@@ -91,7 +91,7 @@ function Move(e) {
             x.NewPosition.Y == newzone[1]).length > 0) {
             SendMoveToServer(oldzone[1] + "" + oldzone[0], newzone[1] + "" + newzone[0]);
             pieceselected = false;
-            SetBoardColors();
+            SetBoardColor();
             return;
         }
         //Ha olyan mezőt targetelek ki ahova nem léphetek
@@ -100,7 +100,7 @@ function Move(e) {
             ResetPossibleMoves();
             pieceselected = false;
             selectedpiece = null;
-            SetBoardColors();
+            SetBoardColor();
             return;
             
         }
@@ -109,7 +109,7 @@ function Move(e) {
         console.log("D");
         ResetPossibleMoves();
         pieceselected = false;
-        SetBoardColors();
+        SetBoardColor();
         return;
     }
 }
