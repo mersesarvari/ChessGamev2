@@ -42,7 +42,7 @@ namespace ChessBotv2
                         currentgame.ExecuteCastleIfNeeded(d.OldcoordX, d.OldcoordY, d.NewcoordX, d.NewcoordY);
 
                         //Player Moving
-                        currentgame.PlayerMove(old + n);
+                        currentgame.Move(old + n);
                         Console.WriteLine("Player moved: " + old + n);
                         Server.SendMessage(currentgame.Player1, JsonConvert.SerializeObject(new { Opcode = 5, OldX = d.OldcoordX, OldY = d.OldcoordY, NewX = d.NewcoordX, NewY = d.NewcoordY, Fen = currentgame.board.ToFen() }));
                         Server.SendMessage(currentgame.Player2, JsonConvert.SerializeObject(new { Opcode = 5, OldX = d.OldcoordX, OldY = d.OldcoordY, NewX = d.NewcoordX, NewY = d.NewcoordY, Fen = currentgame.board.ToFen() }));

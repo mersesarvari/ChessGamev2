@@ -27,6 +27,9 @@ namespace ChessBotv2
             multilobby.Start();
             Console.ReadKey();
             Server.Instance.Stop();
+
+            //tester a= new tester();
+            //a.PawnPromotionTest();
         }
     }
 }

@@ -39,7 +39,7 @@ namespace ChessBotv2
                     if (currentgame.board.IsValidMove(old + "" + n))
                     {
                         //Player Moving
-                        currentgame.PlayerMove(old + n);
+                        currentgame.Move(old + n);
                         Console.WriteLine("Player moved: " + old + n);
                         Server.SendMessage(d.Playerid, JsonConvert.SerializeObject(new { Opcode = 5, Fen=currentgame.board.ToFen()}));
                         //Player WON
@@ -49,7 +49,7 @@ namespace ChessBotv2
                         }
                         //BOT MOVE
                         string botmove =currentgame.bot.GetBestMove();
-                        currentgame.PlayerMove(botmove);
+                        currentgame.Move(botmove);
                         Server.SendMessage(d.Playerid, JsonConvert.SerializeObject(new { Opcode = 5, Fen = currentgame.board.ToFen() }));
                         Console.WriteLine("Bot moved: "+botmove);
                         Server.SendMessage(currentgame.Player1, JsonConvert.SerializeObject(new { Opcode = 6, Possiblemoves = currentgame.board.Moves() }));

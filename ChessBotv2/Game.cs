@@ -44,11 +44,21 @@ namespace ChessBotv2
             moveList = new List<string>();         
             turn= 0;
         }
-        public void PlayerMove(string move)
+        public void Move(string move)
         {
             //Hame to manage the situation when a  more then 4 character(pawn is reaching the end of the board)
-            moveList.Add(move.Remove(4));
-            board.Move(move.Remove(4));
+            if (move.Length < 5)
+            {
+                moveList.Add(move);
+                board.Move(move);
+            }
+            else
+            {
+                var castlemovefortheboard = move.Remove(4) + "=" + move[4].ToString().ToUpper();
+                moveList.Add(move);
+                board.Move(castlemovefortheboard);
+            }
+            
             Console.WriteLine("Player moved:");
 
             Console.WriteLine(board.ToAscii());

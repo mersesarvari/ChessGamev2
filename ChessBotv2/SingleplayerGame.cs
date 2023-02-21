@@ -42,27 +42,10 @@ namespace ChessBotv2
             {
                 //BOT MOVE
                 string botmove = bot.GetBestMove();
-                PlayerMove(botmove);
-
-                //Le kell checkolni később hogy tényleg 4 elemű e a karakterkód, mert lehet 5 elemű is
-                var botmovecoordsold = Game.GetCoordinateFromZone(botmove[0] + "" + botmove[1]);
-                var botmovecoordsnew = Game.GetCoordinateFromZone(botmove[2] + "" + botmove[3]);
-
-                //Checking castle. MB not a good method. Have to check it later...
+                Move(botmove);
 
                 Console.WriteLine("Bot moved: " + botmove);
-                Server.SendMessage(
-                    Player1,
-                    JsonConvert.SerializeObject(
-                        new
-                        {
-                            Opcode = 5,
-                            OldX = botmovecoordsold.Item2,
-                            OldY = botmovecoordsold.Item1,
-                            NewX = botmovecoordsnew.Item2,
-                            NewY = botmovecoordsnew.Item1,
-                            Fen= board.ToFen()
-                        }));
+                Server.SendMessage(Player1, JsonConvert.SerializeObject(new {Opcode=5, Fen=board.ToFen()}));
                 var wmovemsg = new { Opcode = 6, Possiblemoves = board.Moves() };
                 Server.SendMessage(Player1, JsonConvert.SerializeObject(wmovemsg));
             }

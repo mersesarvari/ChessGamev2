@@ -26,11 +26,11 @@ namespace ChessBotv2
             board = ChessBoard.LoadFromFen(fenstring);
             bot.stockfish.SetFenPosition(fenstring);
             
-            Console.WriteLine(bot.stockfish.GetBoardVisual());
             var bestmove = bot.stockfish.GetBestMove();
+
             Console.WriteLine("Bot best move: "+ bestmove);
-            bestmove = bestmove.Remove(4);
-            board.Move(bestmove);
+            var asd = bestmove.Remove(4) + "=" + bestmove[4].ToString().ToUpper();
+            board.Move(asd);
             Console.WriteLine(board.ToAscii());
 
         }
